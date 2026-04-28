@@ -33,4 +33,4 @@ jobs:
           done
 
       - name: run tests
-        run: mvn clean test -Dgrid.url=http://localhost:4444/wd/hub
+        run: mvn clean test -Dexecution.mode=remote -Dgrid.url=http://localhost:4444/wd/hub
