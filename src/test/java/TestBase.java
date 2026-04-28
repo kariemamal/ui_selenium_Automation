@@ -18,10 +18,8 @@ public class TestBase {
     Faker faker = new Faker();
 
 
-    protected static final String EXECUTION_MODE = System.getProperty("execution.mode",
-            System.getenv("EXECUTION_MODE"));
-    protected static final String REMOTE_URL = System.getProperty("grid.url",
-            System.getenv("GRID_URL"));
+    protected static final String EXECUTION_MODE = System.getProperty("execution.mode", System.getenv("EXECUTION_MODE"));
+    protected static final String REMOTE_URL = System.getProperty("grid.url", System.getenv("GRID_URL"));
 
 
     WebDriver driver;
