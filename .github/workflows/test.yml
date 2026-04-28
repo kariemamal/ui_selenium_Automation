@@ -1,0 +1,36 @@
+name: Selenium Tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      selenium:
+        image: selenium/standalone-chrome:latest
+        ports:
+          - 4444:4444
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: setup java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: wait for selenium grid
+        run: |
+          for i in {1..10}; do
+            curl -s http://localhost:4444/status && break
+            sleep 2
+          done
+
+      - name: run tests
+        run: mvn clean test -Dgrid.url=http://localhost:4444/wd/hub
