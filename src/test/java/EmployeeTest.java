@@ -38,6 +38,5 @@ public class EmployeeTest extends TestBase {
         AddEmployeePage addEmployeePage = new AddEmployeePage(driver);
         addEmployeePage.createEmployee("karim", "gamal", "rashed", faker.name().name(), "karim123" , true);
 //        Assert.assertTrue(driver.getCurrentUrl().contains("https://opensource-demo.orangehrmlive.com/web/index.php/pim/viewPersonalDetails/empNumber/"));
-    // karim gamal
     }
 }
