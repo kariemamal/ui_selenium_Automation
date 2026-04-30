@@ -16,6 +16,7 @@ public class EmployeeTest extends TestBase {
 
         System.out.println("Employee time now is : " + new Date().getTime());
         employeePage = new EmployeePage(webDriver);
+        dashboardPage = new DashboardPage(webDriver);
         dashboardPage.openEmployeePage();
         Assert.assertEquals(getText(employeePage.pageTitle), "PIM", "Failed to open Employee Page: Page title does not match expected value.");
     }
