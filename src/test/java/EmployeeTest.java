@@ -11,7 +11,7 @@ public class EmployeeTest extends TestBase {
     EmployeePage employeePage;
 
 
-    @Test(priority = 2)
+    @Test(priority = 1)
     public void openEmployeePage() throws InterruptedException {
 
         System.out.println("Employee time now is : " + new Date().getTime());
@@ -21,13 +21,14 @@ public class EmployeeTest extends TestBase {
         Assert.assertEquals(getText(employeePage.pageTitle), "PIM", "Failed to open Employee Page: Page title does not match expected value.");
     }
 
+    @Test(priority = 2)
     public void openCreateEmployeePage() {
         AddEmployeePage addEmployeePage = new AddEmployeePage(webDriver);
         employeePage.OpenAddEmployeePage();
         Assert.assertEquals(getText(addEmployeePage.pageTitle), "Add Employee", "Failed to open Create Employee Page: Page title does not match expected value.");
     }
 
-    @Test(priority = 4)
+    @Test(priority = 3)
     public void createEmployee() throws InterruptedException {
         AddEmployeePage addEmployeePage = new AddEmployeePage(webDriver);
         addEmployeePage.createEmployee("karim", "gamal", "rashed", faker.name().name(), "karim123", true);

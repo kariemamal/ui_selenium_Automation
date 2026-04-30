@@ -1,11 +1,15 @@
 import io.github.bonigarcia.wdm.WebDriverManager;
 import net.datafaker.Faker;
+import org.hrm.DashboardPage;
+import org.hrm.LoginPage;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
+import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 
 import java.net.MalformedURLException;
@@ -23,6 +27,8 @@ public class TestBase {
 
     WebDriver webDriver;
     Wait<WebDriver> wait;
+    LoginPage loginPage;
+    DashboardPage dashboardPage;
 
     @BeforeTest
     public void setupWebDriver() throws MalformedURLException {
@@ -43,6 +49,7 @@ public class TestBase {
                 .ignoring(ElementNotInteractableException.class).withMessage("Element not interactable after waiting for 30 seconds")
                 .ignoring(ElementClickInterceptedException.class).withMessage("Element click intercepted after waiting for 30 seconds");
         webDriver.get("https://opensource-demo.orangehrmlive.com/");
+        login();
     }
 
     private WebDriver createLocalDriver() {
@@ -78,5 +85,11 @@ public class TestBase {
         if (webDriver != null) {
             webDriver.quit();
         }
+    }
+
+    private void login() {
+        loginPage = new LoginPage(webDriver);
+        dashboardPage = new DashboardPage(webDriver);
+        loginPage.login("Admin", "admin123");
     }
 }

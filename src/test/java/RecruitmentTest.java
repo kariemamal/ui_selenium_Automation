@@ -13,6 +13,7 @@ public class RecruitmentTest extends TestBase {
     public void checkThatRecruitmentIsOpened() {
         System.out.println("Requirement time now is : " + new Date().getTime());
         recruitmentPage = new RecruitmentPage(webDriver);
+        dashboardPage.openRecruitmentPage();
         Assert.assertEquals(webDriver.getCurrentUrl(), "https://opensource-demo.orangehrmlive.com/web/index.php/recruitment/viewCandidates");
     }
 }
