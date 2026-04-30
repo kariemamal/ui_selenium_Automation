@@ -8,12 +8,16 @@ public class DashboardPage extends PageBase {
     }
 
 
-
     public By dashboardItem = By.xpath("//span[text()='Dashboard']");
     By employeeMenu = By.xpath("//span[text()='PIM']");
+    By RecruitmentMenu = By.xpath("//span[text()='Recruitment']");
 
 
     public void openEmployeePage() {
         click(employeeMenu);
+    }
+
+    public void openRecruitmentPage() {
+        click(RecruitmentMenu);
     }
 }

@@ -10,10 +10,26 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      selenium:
-        image: selenium/standalone-chrome:latest
+      selenium-hub:
+        image: selenium/hub:4.0
         ports:
           - 4444:4444
+
+      chrome-node-1:
+        image: selenium/node-chrome:4.0
+        env:
+          SE_EVENT_BUS_HOST: selenium-hub
+          SE_EVENT_BUS_PUBLISH_PORT: 4442
+          SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
+
+      chrome-node-2:
+        image: selenium/node-chrome:4.0
+        env:
+          SE_EVENT_BUS_HOST: selenium-hub
+          SE_EVENT_BUS_PUBLISH_PORT: 4442
+          SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
+
+
 
     steps:
       - name: Checkout Code
