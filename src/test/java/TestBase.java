@@ -9,6 +9,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.testng.Assert;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 
@@ -80,7 +81,7 @@ public class TestBase {
     }
 
 
-//    @AfterTest
+    @AfterTest
     public void tearDown() {
         if (webDriver != null) {
             webDriver.quit();
