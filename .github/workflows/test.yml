@@ -50,14 +50,14 @@ jobs:
             hostname
             
             # ✅ 2. اطبع الـ Public IP
-            - name: Print Public IP
-              run: |
-                echo "Public IP:"
-                curl -s ifconfig.me
+      - name: Print Public IP
+        run: |
+            echo "Public IP:"
+            curl -s ifconfig.me
             
             # ✅ 3. اطبع GitHub runner context
-            - name: Print Runner Context
-              run: echo '${{ toJson(runner) }}'
+      - name: Print Runner Context
+        run: echo '${{ toJson(runner) }}'
 
       - name: wait for selenium grid
         run: |
@@ -75,8 +75,8 @@ jobs:
             echo "Hostname: $(hostname)" >> machine-info.txt
             echo "IP: $(curl -s ifconfig.me)" >> machine-info.txt
 
-            - name: Upload Machine Info
-              uses: actions/upload-artifact@v4
-              with:
-                name: machine-info-${{ matrix.instance }}
-                path: machine-info.txt  
+      - name: Upload Machine Info
+        uses: actions/upload-artifact@v4
+        with:
+            name: machine-info-${{ matrix.instance }}
+            path: machine-info.txt
