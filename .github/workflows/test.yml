@@ -41,6 +41,24 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Print Runner Info
+        run: |
+            echo "RUNNER_NAME: $RUNNER_NAME"
+            echo "RUNNER_OS: $RUNNER_OS"
+            echo "RUNNER_ARCH: $RUNNER_ARCH"
+            echo "HOSTNAME:"
+            hostname
+            
+            # ✅ 2. اطبع الـ Public IP
+            - name: Print Public IP
+              run: |
+                echo "Public IP:"
+                curl -s ifconfig.me
+            
+            # ✅ 3. اطبع GitHub runner context
+            - name: Print Runner Context
+              run: echo '${{ toJson(runner) }}'
+
       - name: wait for selenium grid
         run: |
           for i in {1..10}; do
@@ -50,3 +68,15 @@ jobs:
 
       - name: run tests
         run: mvn clean test -Dexecution.mode=remote -Dgrid.url=http://localhost:4444/wd/hub
+
+      - name: Save Machine Info
+        run: |
+            echo "Runner: $RUNNER_NAME" > machine-info.txt
+            echo "Hostname: $(hostname)" >> machine-info.txt
+            echo "IP: $(curl -s ifconfig.me)" >> machine-info.txt
+
+            - name: Upload Machine Info
+              uses: actions/upload-artifact@v4
+              with:
+                name: machine-info-${{ matrix.instance }}
+                path: machine-info.txt  
