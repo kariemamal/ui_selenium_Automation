@@ -1,9 +1,13 @@
+import jdk.jfr.Timestamp;
 import org.hrm.AddEmployeePage;
 import org.hrm.DashboardPage;
 import org.hrm.EmployeePage;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class EmployeeTest extends TestBase {
@@ -13,8 +17,7 @@ public class EmployeeTest extends TestBase {
 
     @Test(priority = 1)
     public void openEmployeePage() throws InterruptedException {
-
-        System.out.println("Employee time now is : " + new Date().getTime());
+        System.out.println("Session ID: " + LocalDateTime.now().toString());
         employeePage = new EmployeePage(webDriver);
         dashboardPage = new DashboardPage(webDriver);
         dashboardPage.openEmployeePage();
