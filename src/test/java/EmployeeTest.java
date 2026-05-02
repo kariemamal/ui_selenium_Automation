@@ -17,7 +17,7 @@ public class EmployeeTest extends TestBase {
 
     @Test(priority = 1)
     public void openEmployeePage() throws InterruptedException {
-        System.out.println("Session ID: " + LocalDateTime.now().toString());
+        System.out.println("startedDate " + LocalDateTime.now().toString());
         employeePage = new EmployeePage(webDriver);
         dashboardPage = new DashboardPage(webDriver);
         dashboardPage.openEmployeePage();
@@ -36,5 +36,6 @@ public class EmployeeTest extends TestBase {
         AddEmployeePage addEmployeePage = new AddEmployeePage(webDriver);
         addEmployeePage.createEmployee("karim", "gamal", "rashed", faker.name().name(), "karim123", true);
 //        Assert.assertTrue(driver.getCurrentUrl().contains("https://opensource-demo.orangehrmlive.com/web/index.php/pim/viewPersonalDetails/empNumber/"));
+
     }
 }

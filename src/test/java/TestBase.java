@@ -13,9 +13,11 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 
+import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class TestBase {
 
@@ -88,6 +90,7 @@ public class TestBase {
 
     @AfterTest
     public void tearDown() {
+        System.out.println("EndDate " + LocalDateTime.now().toString());
         if (webDriver != null) {
             webDriver.quit();
         }
