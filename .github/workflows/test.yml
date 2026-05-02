@@ -46,7 +46,7 @@ jobs:
       #          done
 
       - name: run tests
-        run: mvn clean test -Dtest=${{ matrix.testClass }}
+        run: mvn clean test -Dexecution.mode=remote -Dtest=${{ matrix.testClass }}
 
       - name: Save Machine Info
         run: |
@@ -57,5 +57,5 @@ jobs:
       - name: Upload Machine Info
         uses: actions/upload-artifact@v4
         with:
-          name: machine-info-${{ matrix.testClass }}
+          name: machine-info-${{ matrix.instance }}
           path: machine-info.txt
