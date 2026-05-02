@@ -1,35 +1,14 @@
 name: Selenium Tests
 
-on:
-  push:
-    branches: [ "master" ]
-  pull_request:
+on: push
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      selenium-hub:
-        image: selenium/hub:4.0
-        ports:
-          - 4444:4444
-
-      chrome-node-1:
-        image: selenium/node-chrome:4.0
-        env:
-          SE_EVENT_BUS_HOST: selenium-hub
-          SE_EVENT_BUS_PUBLISH_PORT: 4442
-          SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
-
-      chrome-node-2:
-        image: selenium/node-chrome:4.0
-        env:
-          SE_EVENT_BUS_HOST: selenium-hub
-          SE_EVENT_BUS_PUBLISH_PORT: 4442
-          SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
-
-
+    strategy:
+      matrix:
+        testClass: [ EmployeeTest, RecruitmentTest ]
 
     steps:
       - name: Checkout Code
@@ -43,40 +22,40 @@ jobs:
 
       - name: Print Runner Info
         run: |
-            echo "RUNNER_NAME: $RUNNER_NAME"
-            echo "RUNNER_OS: $RUNNER_OS"
-            echo "RUNNER_ARCH: $RUNNER_ARCH"
-            echo "HOSTNAME:"
-            hostname
-            
-            # ✅ 2. اطبع الـ Public IP
+          echo "RUNNER_NAME: $RUNNER_NAME"
+          echo "RUNNER_OS: $RUNNER_OS"
+          echo "RUNNER_ARCH: $RUNNER_ARCH"
+          echo "HOSTNAME:"
+          hostname
+          
+          # ✅ 2. اطبع الـ Public IP
       - name: Print Public IP
         run: |
-            echo "Public IP:"
-            curl -s ifconfig.me
-            
-            # ✅ 3. اطبع GitHub runner context
+          echo "Public IP:"
+          curl -s ifconfig.me
+          
+          # ✅ 3. اطبع GitHub runner context
       - name: Print Runner Context
         run: echo '${{ toJson(runner) }}'
 
-      - name: wait for selenium grid
-        run: |
-          for i in {1..10}; do
-            curl -s http://localhost:4444/status && break
-            sleep 2
-          done
+      #      - name: wait for selenium grid
+      #        run: |
+      #          for i in {1..10}; do
+      #            curl -s http://localhost:4444/status && break
+      #            sleep 2
+      #          done
 
       - name: run tests
         run: mvn clean test -Dexecution.mode=remote -Dgrid.url=http://localhost:4444/wd/hub
 
       - name: Save Machine Info
         run: |
-            echo "Runner: $RUNNER_NAME" > machine-info.txt
-            echo "Hostname: $(hostname)" >> machine-info.txt
-            echo "IP: $(curl -s ifconfig.me)" >> machine-info.txt
+          echo "Runner: $RUNNER_NAME" > machine-info.txt
+          echo "Hostname: $(hostname)" >> machine-info.txt
+          echo "IP: $(curl -s ifconfig.me)" >> machine-info.txt
 
       - name: Upload Machine Info
         uses: actions/upload-artifact@v4
         with:
-            name: machine-info-${{ matrix.instance }}
-            path: machine-info.txt
+          name: machine-info-${{ matrix.instance }}
+          path: machine-info.txt
