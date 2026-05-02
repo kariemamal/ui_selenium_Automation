@@ -20,6 +20,30 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+
+      - name: Start Selenium Grid
+        run: |
+            docker network create grid || true
+            
+            docker run -d --name selenium-hub \
+              --network grid \
+              -p 4444:4444 \
+              selenium/hub:4.20.0
+            
+            docker run -d --name chrome-node-1 \
+              --network grid \
+              -e SE_EVENT_BUS_HOST=selenium-hub \
+              -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
+              -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
+              selenium/node-chrome:4.20.0
+            
+            docker run -d --name chrome-node-2 \
+              --network grid \
+              -e SE_EVENT_BUS_HOST=selenium-hub \
+              -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
+              -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
+              selenium/node-chrome:4.20.0
+
       - name: Print Runner Info
         run: |
           echo "RUNNER_NAME: $RUNNER_NAME"
@@ -46,16 +70,18 @@ jobs:
       #          done
 
       - name: run tests
-        run: mvn clean test -Dtest=${{ matrix.testClass }}
+        run: mvn clean test \
+          -Dexecution.mode=remote \
+          -Dtest=${{ matrix.testClass }}
 
       - name: Save Machine Info
         run: |
-          echo "Runner: $RUNNER_NAME" > machine-info.txt
-          echo "Hostname: $(hostname)" >> machine-info.txt
-          echo "IP: $(curl -s ifconfig.me)" >> machine-info.txt
+            echo "Test Class: ${{ matrix.testClass }}" > machine-info.txt
+            echo "Runner: $RUNNER_NAME" >> machine-info.txt
+            echo "Hostname: $(hostname)" >> machine-info.txt
 
-      - name: Upload Machine Info
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: machine-info-${{ matrix.instance }}
-          path: machine-info.txt
+         name: results-${{ matrix.testClass }}
+         path: machine-info.txt

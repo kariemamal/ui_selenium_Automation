@@ -1,3 +1,4 @@
+import org.hrm.DashboardPage;
 import org.hrm.RecruitmentPage;
 import org.testng.Assert;
 import org.testng.annotations.Test;
