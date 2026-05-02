@@ -70,9 +70,7 @@ jobs:
       #          done
 
       - name: run tests
-        run: mvn clean test \
-          -Dexecution.mode=remote \
-          -Dtest=${{ matrix.testClass }}
+        run: mvn clean test -Dexecution.mode=remote -Dtest=${{ matrix.testClass }}
 
       - name: Save Machine Info
         run: |
