@@ -7,45 +7,61 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      fail-fast: false
       matrix:
-        testClass: [EmployeeTest, RecruitmentTest]
+        testClass: [ EmployeeTest, RecruitmentTest ]
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v5
 
-      - name: Setup Java
+      - name: setup java
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '21'
 
-      # 🔥 Start Selenium Grid
+
       - name: Start Selenium Grid
         run: |
-          docker network create grid || true
-          
-          docker run -d --name selenium-hub \
-            --network grid \
-            -p 4444:4444 \
-            selenium/hub:4.20.0
-          
-          docker run -d --name chrome-node-1 \
-            --network grid \
-            -e SE_EVENT_BUS_HOST=selenium-hub \
-            -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
-            -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
-            selenium/node-chrome:4.20.0
-          
-          docker run -d --name chrome-node-2 \
-            --network grid \
-            -e SE_EVENT_BUS_HOST=selenium-hub \
-            -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
-            -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
-            selenium/node-chrome:4.20.0
+            docker network create grid || true
+            
+            docker run -d --name selenium-hub \
+              --network grid \
+              -p 4444:4444 \
+              selenium/hub:4.20.0
+            
+            docker run -d --name chrome-node-1 \
+              --network grid \
+              -e SE_EVENT_BUS_HOST=selenium-hub \
+              -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
+              -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
+              selenium/node-chrome:4.20.0
+            
+            docker run -d --name chrome-node-2 \
+              --network grid \
+              -e SE_EVENT_BUS_HOST=selenium-hub \
+              -e SE_EVENT_BUS_PUBLISH_PORT=4442 \
+              -e SE_EVENT_BUS_SUBSCRIBE_PORT=4443 \
+              selenium/node-chrome:4.20.0
 
-      # ⏳ Wait for Grid
+      - name: Print Runner Info
+        run: |
+          echo "RUNNER_NAME: $RUNNER_NAME"
+          echo "RUNNER_OS: $RUNNER_OS"
+          echo "RUNNER_ARCH: $RUNNER_ARCH"
+          echo "HOSTNAME:"
+          hostname
+          
+          # ✅ 2. اطبع الـ Public IP
+      - name: Print Public IP
+        run: |
+          echo "Public IP:"
+          curl -s ifconfig.me
+          
+          # ✅ 3. اطبع GitHub runner context
+      - name: Print Runner Context
+        run: echo '${{ toJson(runner) }}'
+
       - name: Wait for Grid
         run: |
           for i in {1..20}; do
@@ -53,39 +69,17 @@ jobs:
             sleep 3
           done
 
-      # 🧠 PRINT MACHINE IDENTITY (المهم)
-      - name: Print Machine Identity
-        run: |
-          echo "======================"
-          echo "TEST CLASS: ${{ matrix.testClass }}"
-          echo "RUNNER_NAME: $RUNNER_NAME"
-          echo "HOSTNAME: $(hostname)"
-          echo "PUBLIC IP: $(curl -s ifconfig.me)"
-          echo "START TIME: $(date)"
-          echo "======================"
+      - name: run tests
+        run: mvn clean test -Dexecution.mode=remote -Dtest=${{ matrix.testClass }}
 
-      # 🧪 Run Tests
-      - name: Run Tests
-        run: |
-          mvn clean test \
-            -Dexecution.mode=remote \
-            -Dgrid.url=http://localhost:4444 \
-            -Dtest=${{ matrix.testClass }}
-
-      # 🧠 Save machine info
       - name: Save Machine Info
         run: |
-          echo "======================" > machine-info.txt
-          echo "TEST CLASS: ${{ matrix.testClass }}" >> machine-info.txt
-          echo "RUNNER_NAME: $RUNNER_NAME" >> machine-info.txt
-          echo "HOSTNAME: $(hostname)" >> machine-info.txt
-          echo "PUBLIC IP: $(curl -s ifconfig.me)" >> machine-info.txt
-          echo "END TIME: $(date)" >> machine-info.txt
-          echo "======================" >> machine-info.txt
+            echo "Test Class: ${{ matrix.testClass }}" > machine-info.txt
+            echo "Runner: $RUNNER_NAME" >> machine-info.txt
+            echo "Hostname: $(hostname)" >> machine-info.txt
 
-      # 📦 Upload artifact لكل job
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: machine-${{ matrix.testClass }}
-          path: machine-info.txt
+         name: results-${{ matrix.testClass }}
+         path: machine-info.txt
