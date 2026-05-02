@@ -14,8 +14,7 @@ public class RecruitmentTest extends TestBase {
 
     @Test
     public void checkThatRecruitmentIsOpened() {
-        System.out.println("Session ID: " + LocalDateTime.now().toString());
-        System.out.println("Requirement time now is : " + new Date().getTime());
+        System.out.println("startedDate " + LocalDateTime.now().toString());
         recruitmentPage = new RecruitmentPage(webDriver);
         this.dashboardPage = new DashboardPage(webDriver);
         dashboardPage.openRecruitmentPage();
