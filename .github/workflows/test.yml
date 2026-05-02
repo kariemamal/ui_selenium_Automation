@@ -62,12 +62,12 @@ jobs:
       - name: Print Runner Context
         run: echo '${{ toJson(runner) }}'
 
-      #      - name: wait for selenium grid
-      #        run: |
-      #          for i in {1..10}; do
-      #            curl -s http://localhost:4444/status && break
-      #            sleep 2
-      #          done
+      - name: Wait for Grid
+        run: |
+          for i in {1..20}; do
+            curl -s http://localhost:4444/status | grep '"ready":true' && break
+            sleep 3
+          done
 
       - name: run tests
         run: mvn clean test -Dexecution.mode=remote -Dtest=${{ matrix.testClass }}
