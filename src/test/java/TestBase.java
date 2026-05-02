@@ -24,12 +24,11 @@ public class TestBase {
 
     protected static final String EXECUTION_MODE = System.getProperty("execution.mode", System.getenv("EXECUTION_MODE"));
     protected static final String REMOTE_URL = System.getProperty("grid.url", System.getenv("GRID_URL"));
-
+    protected static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 
     WebDriver webDriver;
     Wait<WebDriver> wait;
     LoginPage loginPage;
-    DashboardPage dashboardPage;
 
     @BeforeTest
     public void setupWebDriver() throws MalformedURLException {
@@ -37,11 +36,12 @@ public class TestBase {
 
         if (isRemote) {
             String gridUrl = REMOTE_URL != null ? REMOTE_URL : "http://localhost:4444/wd/hub";
-            webDriver = createRemoteDriver(gridUrl);
+            driver.set(createRemoteDriver(gridUrl));
         } else {
-            webDriver = createLocalDriver();
+            driver.set(createLocalDriver());
         }
 
+        webDriver = driver.get();
         webDriver.manage().window().maximize();
         wait = new FluentWait<>(webDriver)
                 .withTimeout(Duration.ofSeconds(30))
@@ -95,7 +95,6 @@ public class TestBase {
 
     private void login() {
         loginPage = new LoginPage(webDriver);
-        dashboardPage = new DashboardPage(webDriver);
         loginPage.login("Admin", "admin123");
     }
 }
